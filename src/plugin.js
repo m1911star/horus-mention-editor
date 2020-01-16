@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Plugin, PluginKey } from 'prosemirror-state';
 import { DecorationSet, Decoration } from 'prosemirror-view';
-import { Select } from 'antd';
+import { Select, Menu, Dropdown } from 'antd';
 const { Option, OptGroup } = Select;
 
 /**
@@ -124,8 +124,24 @@ function getMentionsPlugin(opts) {
   // ----- methods operating on above properties -----
 
   var showList = function (view, state, suggestions, opts) {
+    const content = (
+      <Menu className="suggestion-item-list">
+        {
+          (state.suggestions || []).map(suggestion => {
+            return (
+              <Menu.Item className="suggestion-item">
+                {suggestion.name}
+              </Menu.Item>
+            );
+          })
+        }
+      </Menu>
+    );
     el.innerHTML = opts.getSuggestionsHTML(suggestions, state.type);
-
+    // const container = document.createElement('div');
+    ReactDOM.render(content, el);
+    // el.innerHTML = container;
+    // console.log(el, container);
     // attach new item event handlers
     el.querySelectorAll('.suggestion-item').forEach(function (itemNode, index) {
       itemNode.addEventListener('click', function () {
@@ -170,13 +186,13 @@ function getMentionsPlugin(opts) {
   };
 
   var removeClassAtIndex = function (index, className) {
-    var itemList = el.querySelector('.suggestion-item-list').childNodes;
+    var itemList = el.querySelectorAll('.suggestion-item-list .suggestion-item');
     var prevItem = itemList[index];
     prevItem.classList.remove(className);
   };
 
   var addClassAtIndex = function (index, className) {
-    var itemList = el.querySelector('.suggestion-item-list').childNodes;
+    var itemList = el.querySelectorAll('.suggestion-item-list .suggestion-item');
     var prevItem = itemList[index];
     prevItem.classList.add(className);
   };
@@ -313,12 +329,15 @@ function getMentionsPlugin(opts) {
     view() {
       return {
         update: view => {
+          console.log(view, this, this.key);
           var state = this.key.getState(view.state);
+          console.log('text', state.text, state);
           if (!state.text) {
             hideList();
             clearTimeout(showListTimeoutId);
             return;
           }
+          console.log(view);
           // debounce the call to avoid multiple requests
           showListTimeoutId = debounce(function () {
             // get suggestions and set new state
@@ -351,27 +370,27 @@ const mentionNode = {
   draggable: true,
 
   toDOM: (node) => {
-    console.log(node);
-    function buildDom() {
-      const container = document.createElement('div');
-      const content = <Select defaultValue="lucy" style={{ width: 200 }}>
-        <OptGroup label="Manager">
-          <Option value="jack">Jack</Option>
-          <Option value="lucy">Lucy</Option>
-        </OptGroup>
-        <OptGroup label="Engineer">
-          <Option value="Yiminghe">yiminghe</Option>
-        </OptGroup>
-      </Select>
-      ReactDOM.render(content, container);
-      return container;
-    }
-    return ['span', {
-      'data-mention-id': node.attrs.id,
-      'data-mention-name': node.attrs.name,
-      class: 'prosemirror-mention-node'
-    }, buildDom()];
-  },
+      const suggestions = [{ name: 'John Doe', id: '101', email: 'joe@gmail.com' }, { name: 'Joe Lewis', id: '102', email: 'lewis@gmail.com' }];
+      const buildDom = () => {
+        const container = document.createElement('div');
+        const content = (
+          <Select value={node.attrs.name}>
+            {
+              suggestions.map(suggestion => {
+                return <Option key={suggestion.id}>{suggestion.name}</Option>
+              })
+            }
+          </Select>
+        );
+        ReactDOM.render(content, container);
+        return container;
+      };
+      return ['span', {
+        'data-mention-id': node.attrs.id,
+        'data-mention-name': node.attrs.name,
+        class: 'prosemirror-mention-node'
+      }, buildDom()];
+    },
 
   parseDOM: [{
     // match tag with following CSS Selector
