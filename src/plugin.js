@@ -1,5 +1,9 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { Plugin, PluginKey } from 'prosemirror-state';
 import { DecorationSet, Decoration } from 'prosemirror-view';
+import { Select } from 'antd';
+const { Option, OptGroup } = Select;
 
 /**
  * 生成匹配正则
@@ -297,6 +301,7 @@ function getMentionsPlugin(opts) {
 
         if (!active) return null;
 
+        // 渲染文本中选中的特殊样式
         return DecorationSet.create(editorState.doc, [Decoration.inline(range.from, range.to, {
           nodeName: 'span',
           class: opts.suggestionTextClass
@@ -345,12 +350,27 @@ const mentionNode = {
   selectable: true,
   draggable: true,
 
-  toDOM: node => {
+  toDOM: (node) => {
+    console.log(node);
+    function buildDom() {
+      const container = document.createElement('div');
+      const content = <Select defaultValue="lucy" style={{ width: 200 }}>
+        <OptGroup label="Manager">
+          <Option value="jack">Jack</Option>
+          <Option value="lucy">Lucy</Option>
+        </OptGroup>
+        <OptGroup label="Engineer">
+          <Option value="Yiminghe">yiminghe</Option>
+        </OptGroup>
+      </Select>
+      ReactDOM.render(content, container);
+      return container;
+    }
     return ['span', {
       'data-mention-id': node.attrs.id,
       'data-mention-name': node.attrs.name,
       class: 'prosemirror-mention-node'
-    }, '@' + node.attrs.name];
+    }, buildDom()];
   },
 
   parseDOM: [{
@@ -366,6 +386,36 @@ const mentionNode = {
       };
     }
   }]
+};
+
+const createMentionNode = (config = {}) => {
+  const suggestions = [{ name: 'John Doe', id: '101', email: 'joe@gmail.com' }, { name: 'Joe Lewis', id: '102', email: 'lewis@gmail.com' }];
+  return {
+    ...mentionNode,
+    ...config,
+    toDOM: (node) => {
+      console.log(node);
+      const buildDom = () => {
+        const container = document.createElement('div');
+        const content = (
+          <Select value={node.attrs.name}>
+            {
+              suggestions.map(suggestion => {
+                return <Option key={suggestion.id}>{suggestion.name}</Option>
+              })
+            }
+          </Select>
+        );
+        ReactDOM.render(content, container);
+        return container;
+      };
+      return ['span', {
+        'data-mention-id': node.attrs.id,
+        'data-mention-name': node.attrs.name,
+        class: 'prosemirror-mention-node'
+      }, buildDom()];
+    }
+  };
 };
 
 /**
@@ -403,15 +453,22 @@ const tagNode = {
   }]
 };
 
-function addMentionNodes(nodes) {
+const createTagNode = (config = {}) => {
+  return {
+    ...tagNode,
+    ...config
+  };
+};
+
+function addMentionNodes(nodes, config = {}) {
   return nodes.append({
-    mention: mentionNode
+    mention: createMentionNode(config)
   });
 }
 
-function addTagNodes(nodes) {
+function addTagNodes(nodes, config = {}) {
   return nodes.append({
-    tag: tagNode
+    tag: createTagNode(config)
   });
 }
 

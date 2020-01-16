@@ -8,6 +8,8 @@ import { addListNodes } from 'prosemirror-schema-list';
 import { exampleSetup } from 'prosemirror-example-setup';
 import { addMentionNodes, addTagNodes, getMentionsPlugin } from './plugin';
 import './style.css';
+import { Button } from 'antd';
+
 const newNodes = addTagNodes(addMentionNodes(schema.spec.nodes));
 
 const mySchema = new Schema({
@@ -72,11 +74,11 @@ class App extends Component {
         <div ref= {r => {
           this.content = r;
         }}/>
-        <button onClick={() => {
-          window.view = this.view;
+        <Button onClick={()=>{
+          window.view = this.view; // DEBUG 用
         }}>
           点击
-        </button>
+        </Button>
       </div>
     );
   }

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "antd": "^3.26.7",
     "prosemirror-commands": "1.0.7",
     "prosemirror-example-setup": "1.0.1",
     "prosemirror-keymap": "1.0.1",
@@ -25,14 +26,14 @@
     "changelog": "conventional-changelog -i CHANGELOG.md -s -p horus-mock"
   },
   "devDependencies": {
-    "eslint": "^6.7.2",
-    "eslint-loader": "^3.0.3",
-    "eslint-plugin-react": "^7.17.0",
-    "react-scripts": "latest",
     "commitizen": "^4.0.3",
     "conventional-changelog-cli": "^2.0.31",
     "cz-conventional-changelog": "^3.0.2",
-    "cz-customizable": "^6.2.0"
+    "cz-customizable": "^6.2.0",
+    "eslint": "^6.7.2",
+    "eslint-loader": "^3.0.3",
+    "eslint-plugin-react": "^7.17.0",
+    "react-scripts": "latest"
   },
   "browserslist": {
     "production": [

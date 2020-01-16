@@ -1,4 +1,5 @@
 /* Add space around the hr to make clicking it easier */
+@import '~antd/dist/antd.css';
 
 .ProseMirror-example-setup-style hr {
   padding: 2px 10px;
