@@ -7,7 +7,6 @@
     "prosemirror-commands": "1.0.7",
     "prosemirror-example-setup": "1.0.1",
     "prosemirror-keymap": "1.0.1",
-    "prosemirror-mentions": "^1.0.0",
     "prosemirror-menu": "1.0.4",
     "prosemirror-model": "1.5.0",
     "prosemirror-schema-basic": "1.0.0",
